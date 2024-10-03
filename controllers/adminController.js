@@ -2,8 +2,15 @@ const User = require('../models/User');
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({});
-    res.status(200).json(users);
+    const users = await User.find({}).select('_id accountName role');
+
+    const mappedUsers = users.map((user) => ({
+      userId: user._id,
+      accountName: user.accountName,
+      role: user.role,
+    }));
+
+    res.status(200).json(mappedUsers);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -13,12 +20,19 @@ const getUser = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select('_id accountName role');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    return res.status(200).json(user);
+
+    const mappedUser = {
+      userId: user._id,
+      accountName: user.accountName,
+      role: user.role,
+    };
+
+    return res.status(200).json(mappedUser);
   } catch (error) {
     return res.status(500).json({ message: 'Server error. Couldnt find user with specified id.' });
   }
@@ -47,7 +61,7 @@ const updateUserRole = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
 
   try {
     const user = await User.findById(userId);

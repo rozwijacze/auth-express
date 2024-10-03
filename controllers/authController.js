@@ -19,7 +19,14 @@ const register = async (req, res) => {
 
     const { accessToken, refreshToken } = generateTokens(user);
 
-    return res.status(201).json({ accessToken, refreshToken });
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(201).json({ accessToken });
   } catch (err) {
     return res.status(500).json({ message: 'Server error' });
   }
@@ -60,7 +67,7 @@ const generateTokens = (user) => {
     { userId: user._id, role: user.role, accountName: user.accountName },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: '10m',
+      expiresIn: '30m',
     },
   );
 
