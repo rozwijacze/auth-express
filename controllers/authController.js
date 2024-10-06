@@ -90,9 +90,7 @@ const refreshToken = async (req, res) => {
 const logout = async (req, res) => {
   const refreshTokenToInvalidate = req.cookies.refreshToken;
 
-  if (!refreshTokenToInvalidate) {
-    return res.status(400).json({ message: 'No refresh token provided.' });
-  }
+  if (!refreshTokenToInvalidate) return;
 
   try {
     const payload = jwt.verify(refreshTokenToInvalidate, process.env.REFRESH_TOKEN_SECRET);
@@ -105,7 +103,7 @@ const logout = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
-    clearAllTokens();
+    clearAllTokens(res);
     return res.status(200).json({ message: 'Logged out.' });
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) {
@@ -129,7 +127,7 @@ const removeExpiredTokens = async (userId) => {
   Logger.info('Expired tokens deleted');
 };
 
-const clearAllTokens = () => {
+const clearAllTokens = (res) => {
   res.clearCookie('accessToken', {
     httpOnly: false,
     secure: process.env.NODE_ENV === 'production',

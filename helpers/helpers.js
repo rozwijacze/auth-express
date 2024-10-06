@@ -11,7 +11,7 @@ const generateAccessToken = (user) => {
     { userId: user._id, role: user.role, accountName: user.accountName },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: '4m',
+      expiresIn: '30m',
     },
   );
   return accessToken;
@@ -25,7 +25,7 @@ const generateRefreshToken = (req, res, user) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    maxAge: 30 * 24 * 60 * 60 * 1000,
   });
 
   const refreshTokenData = {
