@@ -6,7 +6,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const ROUTES = require('./constants/routeConstants');
 require('dotenv').config();
 const cors = require('cors');
-
+const cookieParser = require('cookie-parser');
 const app = express();
 
 app.use(cors());
@@ -21,6 +21,8 @@ connectDB();
 
 // Middlewares
 app.use(express.json());
+
+app.use(cookieParser());
 
 // API Routes
 app.use(ROUTES.AUTH.BASE, authRoutes);

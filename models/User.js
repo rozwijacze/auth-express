@@ -22,6 +22,14 @@ const userSchema = new mongoose.Schema(
       enum: ['user', 'editor', 'admin'],
       default: 'user',
     },
+    refreshTokens: [
+      {
+        token: String,
+        deviceInfo: String,
+        expiresAt: Date,
+        createdAt: Date,
+      },
+    ],
   },
   { timestamps: true },
 );

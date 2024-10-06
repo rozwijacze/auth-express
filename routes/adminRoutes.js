@@ -1,7 +1,6 @@
 const express = require('express');
 const { updateUserRole, deleteUser, getAllUsers, getUser } = require('../controllers/adminController');
 const { auth, authorize } = require('../middlewares/authMiddleware');
-const ROUTES = require('../constants/routeConstants');
 
 const router = express.Router();
 router.use(auth, authorize(['admin']));
