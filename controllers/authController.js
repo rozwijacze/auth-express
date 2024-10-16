@@ -90,7 +90,10 @@ const refreshToken = async (req, res) => {
 const logout = async (req, res) => {
   const refreshTokenToInvalidate = req.cookies.refreshToken;
 
-  if (!refreshTokenToInvalidate) return;
+  if (!refreshTokenToInvalidate) {
+    clearAllTokens(res);
+    return res.status(200).json({ message: 'Logged out.' });
+  }
 
   try {
     const payload = jwt.verify(refreshTokenToInvalidate, process.env.REFRESH_TOKEN_SECRET);
@@ -106,6 +109,7 @@ const logout = async (req, res) => {
     clearAllTokens(res);
     return res.status(200).json({ message: 'Logged out.' });
   } catch (err) {
+    clearAllTokens(res);
     if (err instanceof jwt.TokenExpiredError) {
       return res.status(401).json({ message: 'Refresh token expired.' });
     } else if (err instanceof jwt.JsonWebTokenError) {
