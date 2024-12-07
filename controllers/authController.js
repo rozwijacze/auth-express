@@ -5,32 +5,64 @@ const Logger = require('../utils/Logger');
 
 const register = async (req, res) => {
   try {
-    const { accountName, password } = req.body;
+    const { email, password } = req.body;
 
-    const userExists = await User.findOne({ accountName });
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    const userExists = await User.findOne({ email });
 
     if (userExists) {
-      return res.status(400).json({ message: 'Accountname already registered' });
+      return res.status(400).json({ message: 'Email already registered' });
     }
 
     const usersCount = await User.countDocuments();
     const role = usersCount === 0 ? 'admin' : 'user';
-    const user = new User({ accountName, password, role });
-    await user.save();
+
+    const user = new User({ email, password, role });
+
+    try {
+      await user.save();
+    } catch (validationError) {
+      if (validationError.name === 'ValidationError') {
+        const errors = Object.values(validationError.errors).map((err) => err.message);
+        return res.status(400).json({
+          message: 'Validation failed',
+          errors: errors,
+        });
+      }
+
+      if (validationError.code === 11000) {
+        return res.status(400).json({
+          message: 'A user with this email already exists',
+        });
+      }
+
+      return res.status(500).json({
+        message: 'Error creating user',
+        error: validationError.message,
+      });
+    }
+
     const { accessToken, refreshTokenData } = generateTokens(req, res, user);
     await addTokenToDB(user._id, refreshTokenData);
 
     return res.status(201).json({ accessToken });
   } catch (err) {
-    return res.status(500).json({ message: 'Server error' });
+    console.error('Registration error:', err);
+    return res.status(500).json({
+      message: 'Server error during registration',
+      error: err.message,
+    });
   }
 };
 
 const login = async (req, res) => {
   try {
-    const { accountName, password } = req.body;
+    const { email, password } = req.body;
 
-    const user = await User.findOne({ accountName });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
