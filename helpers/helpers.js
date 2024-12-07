@@ -8,7 +8,7 @@ const generateTokens = (req, res, user) => {
 
 const generateAccessToken = (user) => {
   const accessToken = jwt.sign(
-    { userId: user._id, role: user.role, accountName: user.accountName },
+    { userId: user._id, role: user.role, email: user.email },
     process.env.ACCESS_TOKEN_SECRET,
     {
       expiresIn: '30m',

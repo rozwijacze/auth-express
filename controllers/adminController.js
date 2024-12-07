@@ -2,11 +2,11 @@ const User = require('../models/User');
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}).select('_id accountName role');
+    const users = await User.find({}).select('_id email role');
 
     const mappedUsers = users.map((user) => ({
       userId: user._id,
-      accountName: user.accountName,
+      email: user.email,
       role: user.role,
     }));
 
@@ -20,7 +20,7 @@ const getUser = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const user = await User.findById(userId).select('_id accountName role');
+    const user = await User.findById(userId).select('_id email role');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -28,7 +28,7 @@ const getUser = async (req, res) => {
 
     const mappedUser = {
       userId: user._id,
-      accountName: user.accountName,
+      email: user.email,
       role: user.role,
     };
 
@@ -71,7 +71,7 @@ const deleteUser = async (req, res) => {
     }
 
     await user.deleteOne();
-    return res.status(200).json({ message: `User ${user.accountName} deleted successfuly.` });
+    return res.status(200).json({ message: `User ${user.email} deleted successfuly.` });
   } catch (error) {
     return res.status(500).json({ message: 'Server error. Couldnt delete user.' });
   }
