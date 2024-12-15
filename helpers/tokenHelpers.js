@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 const generateTokens = (req, res, user) => {
   const accessToken = generateAccessToken(user);
@@ -18,7 +19,6 @@ const generateAccessToken = (user) => {
 };
 
 const generateRefreshToken = (req, res, user) => {
-
   const refreshToken = jwt.sign({ userId: user._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
   res.cookie('refreshToken', refreshToken, {
@@ -38,4 +38,8 @@ const generateRefreshToken = (req, res, user) => {
   return { refreshToken, refreshTokenData };
 };
 
-module.exports = { generateTokens, generateAccessToken, generateRefreshToken };
+const generateRandomToken = () => {
+  return crypto.randomBytes(32).toString('hex');
+};
+
+module.exports = { generateTokens, generateAccessToken, generateRefreshToken, generateRandomToken };

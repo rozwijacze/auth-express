@@ -1,6 +1,6 @@
 const BASE_ROUTE = '/api';
 const AUTH_ROUTE = `${BASE_ROUTE}/auth`;
-const USER_ROUTE = `${BASE_ROUTE}/users`;
+const USERS_ROUTE = `${BASE_ROUTE}/users`;
 
 const ROUTES = {
   BASE: BASE_ROUTE,
@@ -11,11 +11,11 @@ const ROUTES = {
     REFRESH: `${AUTH_ROUTE}/refresh`,
     LOGOUT: `${AUTH_ROUTE}/logout`,
   },
-  USER: {
-    BASE: USER_ROUTE,
-    PROFILE: `${USER_ROUTE}/profile`,
-    UPDATE: `${USER_ROUTE}/update`,
-  }
+  USERS: {
+    BASE: USERS_ROUTE,
+    PROFILE: `${USERS_ROUTE}/profile`,
+    UPDATE: `${USERS_ROUTE}/update`,
+  },
 };
 
 module.exports = ROUTES;

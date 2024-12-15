@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
       maxlength: 48,
-      minlength: 7
+      minlength: 7,
     },
     password: {
       type: String,
@@ -32,13 +32,17 @@ const userSchema = new mongoose.Schema(
         createdAt: Date,
       },
     ],
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 12);
+  this.password = await bcrypt.hash(this.password, process.env.SALT);
   next();
 });
 
