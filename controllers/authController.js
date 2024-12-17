@@ -28,9 +28,8 @@ const register = async (req, res) => {
       return res.status(400).json({ message: 'Email already registered' });
     }
 
-    const role = 'user';
 
-    const user = new User({ email, password, role });
+    const user = new User({ email, password, role: 'user' });
 
     try {
       await generateEmailVerificationLink(email);
@@ -201,10 +200,10 @@ const requestPasswordReset = async (req, res) => {
       .sendMail({
         to: email,
         subject: `${process.env.APP_NAME} - Password Reset`,
-        html: `<div>Here is your password reset link: ${resetLink} </div>`,
+        html: `<div>Here is your password reset link: <a href="${resetLink}">CLICK</a></div>`,
       })
       .then(() => {
-        console.log('email sent');
+        Logger.info(`Reset Password Link sent to: ${email}`);
       })
       .catch((err) => {
         console.error(err);
@@ -311,7 +310,7 @@ const generateEmailVerificationLink = async (email) => {
       .sendMail({
         to: email,
         subject: `${process.env.APP_NAME} - Email Verification`,
-        html: `<div>Here is your verification link: ${verificationLink} </div>`,
+        html: `<div>Here is your verification link: <a href="${verificationLink}">CLICK</a></div>`,
       })
       .then(() => {
         Logger.info(`Email Verification Link sent to: ${email}`);
