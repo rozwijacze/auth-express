@@ -1,9 +1,9 @@
 // App Entrypoint
 const express = require('express');
-const connectDB = require('./config/db');
-const authRoutes = require('./routes/authRoutes');
-const adminRoutes = require('./routes/adminRoutes');
-const ROUTES = require('./constants/routeConstants');
+const connectDB = require('./app/config/db');
+const authRoutes = require('./app/routes/authRoutes');
+const adminRoutes = require('./app/routes/adminRoutes');
+const ROUTES = require('./app/constants/routeConstants');
 require('dotenv').config();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
